@@ -2,11 +2,11 @@ from .parsing import Parser, Return, Success, Failure
 from typing import TypeVar, Iterable, Callable, Tuple
 from functools import partial
 
-A = TypeVar('A')
-B = TypeVar('B')
-C = TypeVar('C')
-D = TypeVar('D')
-E = TypeVar('E')
+A = TypeVar("A")
+B = TypeVar("B")
+C = TypeVar("C")
+D = TypeVar("D")
+E = TypeVar("E")
 
 
 def const(a: A) -> Parser[A]:
@@ -17,15 +17,17 @@ def many(pa: Parser[A]) -> Parser[list[A]]:
     def parse(result: list[A], data: str) -> Return:
         ret = pa.run(data)
 
-        return Success(result, data) if ret.failure() else parse(result + [ret.value], ret.next)
+        return (
+            Success(result, data)
+            if ret.failure()
+            else parse(result + [ret.value], ret.next)
+        )
 
     return Parser(partial(parse, []))
 
 
 def many1(pa: Parser[A]) -> Parser[list[A]]:
-    return pa.and_then(
-        lambda x: many(pa).and_then(
-            lambda xs: Parser.pure([x] + xs)))
+    return pa.and_then(lambda x: many(pa).and_then(lambda xs: Parser.pure([x] + xs)))
 
 
 def attempt(pa: Parser[A]) -> Parser[A]:
@@ -59,9 +61,7 @@ def skip_left(pa: Parser[A], pb: Parser[B]) -> Parser[B]:
 
 
 def skip_right(pa: Parser[A], pb: Parser[B]) -> Parser[B]:
-    return pa.and_then(
-        lambda x: pb.and_then(
-            lambda _: Parser.pure(x)))
+    return pa.and_then(lambda x: pb.and_then(lambda _: Parser.pure(x)))
 
 
 def choice(pas: Iterable[Parser[A]]) -> Parser[A]:
@@ -85,9 +85,7 @@ def sep_by1(pa: Parser[A], sep: Parser[B]) -> Parser[list[A]]:
     init = pa  # Read one iteration of expr
     rest = many(sep << pa)  # Read many iteration of <sep><expr>
 
-    return init.and_then(
-        lambda x: rest.and_then(
-            lambda xs: Parser.pure([x] + xs)))
+    return init.and_then(lambda x: rest.and_then(lambda xs: Parser.pure([x] + xs)))
 
 
 def between(open: Parser[A], p: Parser[B], close: Parser[C]) -> Parser[B]:
@@ -99,13 +97,7 @@ def combine(p1: Parser[A], p2: Parser[A]) -> Parser[A]:
 
 
 def combine_f(p1: Parser[A], p2: Parser[A], f: Callable[[A, A], A]) -> Parser[A]:
-    return attempt(
-        p1.and_then(
-            lambda a: p2.and_then(
-                lambda b: Parser.pure(f(a, b))
-            )
-        )
-    )
+    return attempt(p1.and_then(lambda a: p2.and_then(lambda b: Parser.pure(f(a, b)))))
 
 
 def end_by(pa: Parser[A], end: Parser[B]) -> Parser[list[A]]:
@@ -149,12 +141,20 @@ def product3(p1: Parser[A], p2: Parser[B], p3: Parser[C]) -> Parser[Tuple[A, B, 
     return product(p1, p2).and_then(lambda p: p3.and_then(lambda c: const(p + (c,))))
 
 
-def product4(p1: Parser[A], p2: Parser[B], p3: Parser[C], p4: Parser[D]) -> Parser[Tuple[A, B, C, D]]:
-    return product3(p1, p2, p3).and_then(lambda p: p4.and_then(lambda d: const(p + (d,))))
+def product4(
+    p1: Parser[A], p2: Parser[B], p3: Parser[C], p4: Parser[D]
+) -> Parser[Tuple[A, B, C, D]]:
+    return product3(p1, p2, p3).and_then(
+        lambda p: p4.and_then(lambda d: const(p + (d,)))
+    )
 
 
-def product5(p1: Parser[A], p2: Parser[B], p3: Parser[C], p4: Parser[D], p5: Parser[E]) -> Parser[Tuple[A, B, C, D, E]]:
-    return product4(p1, p2, p3, p4).and_then(lambda p: p5.and_then(lambda e: const(p + (e,))))
+def product5(
+    p1: Parser[A], p2: Parser[B], p3: Parser[C], p4: Parser[D], p5: Parser[E]
+) -> Parser[Tuple[A, B, C, D, E]]:
+    return product4(p1, p2, p3, p4).and_then(
+        lambda p: p5.and_then(lambda e: const(p + (e,)))
+    )
 
 
 ###
@@ -169,7 +169,9 @@ p5 = product5
 ###
 # Debug combinators
 #
-def debug(pa: Parser[A], label: str = "Debug", logger: Callable[[str], None] = print) -> Parser[A]:
+def debug(
+    pa: Parser[A], label: str = "Debug", logger: Callable[[str], None] = print
+) -> Parser[A]:
     def wrapper(data: str) -> Return:
         logger(f"*** {label} ***")
         logger(f"Input..: {data}")

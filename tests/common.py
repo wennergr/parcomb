@@ -5,6 +5,7 @@ A = TypeVar("A")
 B = TypeVar("B")
 C = TypeVar("C")
 
+
 def assert_success(obj: Return, value: A, next: str) -> NoReturn:
     assert obj.success()
     assert obj.value == value

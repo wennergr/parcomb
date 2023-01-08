@@ -12,9 +12,10 @@ def test_const():
     expr = any().and_then(
         lambda x: any().and_then(
             lambda y: any().and_then(
-                lambda z: any().and_then(
-                    lambda p: const((x + y, z + p))
-                ))))
+                lambda z: any().and_then(lambda p: const((x + y, z + p)))
+            )
+        )
+    )
 
     assert_success(expr.run(input1), ("ab", "c "), "123")
     assert_failure(expr.run(input2), "")
@@ -65,7 +66,7 @@ def test_sep():
     input2 = "1,2123a,12,56"
     input3 = "abc"
 
-    expr1 = sep_by1(integer(), char(','))
+    expr1 = sep_by1(integer(), char(","))
 
     assert_success(expr1.run(input1), [1, 2123, 12, 56], "")
     assert_success(expr1.run(input2), [1, 2123], "a,12,56")
@@ -89,10 +90,10 @@ def test_combine():
     input1 = "abbbbbc"
     input2 = "acccbbb"
 
-    expr1 = combine(char('a'), char('b'))
-    expr2 = char('a') + char('b') + char('b')
-    expr3 = combine(many(char('a')).map(join), many(char('b')).map(join))
-    expr4 = combine_f(char('a'), char('b'), lambda a, b: b + a)
+    expr1 = combine(char("a"), char("b"))
+    expr2 = char("a") + char("b") + char("b")
+    expr3 = combine(many(char("a")).map(join), many(char("b")).map(join))
+    expr4 = combine_f(char("a"), char("b"), lambda a, b: b + a)
 
     assert_success(expr1.run(input1), "ab", "bbbbc")
     assert_success(expr2.run(input1), "abb", "bbbc")

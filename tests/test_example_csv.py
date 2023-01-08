@@ -5,16 +5,22 @@ from parcomb.combinator import many, sep_by, between
 
 
 def test_csv():
-    csv = dedent("""\
+    csv = dedent(
+        """\
     name,age,location
     John Doe,45,"United States of America, \\"USA\\""
     Sandra Wurst,55,Germany
-    "Eric Strauss",25,Germany""")
+    "Eric Strauss",25,Germany"""
+    )
 
     expected = [
-        {"name": "John Doe", "age": "45", "location": "United States of America, \"USA\""},
+        {
+            "name": "John Doe",
+            "age": "45",
+            "location": 'United States of America, "USA"',
+        },
         {"name": "Sandra Wurst", "age": "55", "location": "Germany"},
-        {"name": "Eric Strauss", "age": "25", "location": "Germany"}
+        {"name": "Eric Strauss", "age": "25", "location": "Germany"},
     ]
 
     def to_entries(headers: list[str], data: list[list[str]]) -> list[dict[str, str]]:
@@ -24,8 +30,8 @@ def test_csv():
         return "".join(xs)
 
     esc = char("\\") << ANY
-    q_str = many(esc | none_of(["\""]))
-    cell1 = between(char("\""), q_str, char("\"")).map(join)  # Cell in quotation marks
+    q_str = many(esc | none_of(['"']))
+    cell1 = between(char('"'), q_str, char('"')).map(join)  # Cell in quotation marks
     cell2 = many(none_of([",", "\n"])).map(join)  # Cell separated by ","
     row = sep_by(cell1 | cell2, char(","))
 

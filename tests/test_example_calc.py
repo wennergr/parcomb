@@ -29,7 +29,7 @@ def test_calc():
             "+": lambda a, b: eval(x + a, next),
             "-": lambda a, b: eval(x - a, next),
             "*": lambda a, b: eval(x * a, next),
-            "/": lambda a, b: eval(x / a, next)
+            "/": lambda a, b: eval(x / a, next),
         }
 
         return fdict[current[0]](current[1], next)

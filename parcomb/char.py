@@ -58,10 +58,13 @@ def none_of(cs: list[str]) -> Parser[str]:
     return satisfy(lambda c: c not in cs, f"#none_of: Found char in {cs}")
 
 
-
 def satisfy(cond: Callable[[str], bool], desc: str) -> Parser[str]:
     def parse(c: str, data: str) -> Return:
-        return Success(c, data) if cond(c) else Failure(f"{desc}. value: [{c}], next: [{data}]", c + data)
+        return (
+            Success(c, data)
+            if cond(c)
+            else Failure(f"{desc}. value: [{c}], next: [{data}]", c + data)
+        )
 
     return any().and_then(lambda x: Parser(partial(parse, x)))
 

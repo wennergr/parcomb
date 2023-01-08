@@ -6,6 +6,7 @@ from typing import Generic, TypeVar, Callable, Union, overload
 A = TypeVar("A")
 B = TypeVar("B")
 
+
 @dataclass
 class Failure:
     message: str
@@ -54,7 +55,6 @@ class Parser(Generic[A]):
     def run(self, data: str) -> Return:
         return self.f(data)
 
-
     def map(self, f: Callable[[A], B]) -> Parser[B]:
         def parse(data: str) -> Return:
             ret = self.run(data)
@@ -88,6 +88,7 @@ class Parser(Generic[A]):
 
     def count(self, n: int) -> Parser[A]:
         from .combinator import count
+
         return count(n, self)
 
     @overload
@@ -96,10 +97,12 @@ class Parser(Generic[A]):
 
     def __mul__(self, other: Parser[B]) -> Parser[(A, B)]:
         from .combinator import product
+
         return product(self, other)
 
     def skip_left(self, pb: Parser[B]) -> Parser[B]:
         from .combinator import skip_left
+
         return skip_left(self, pb)
 
     def __lshift__(self, pb: Parser[B]) -> Parser[B]:
@@ -107,6 +110,7 @@ class Parser(Generic[A]):
 
     def skip_right(self, pb: Parser[B]) -> Parser[A]:
         from .combinator import skip_right
+
         return skip_right(self, pb)
 
     def __rshift__(self, pb: Parser[B]) -> Parser[A]:
@@ -114,6 +118,7 @@ class Parser(Generic[A]):
 
     def combine(self, pa: Parser[A]) -> Parser[A]:
         from .combinator import combine
+
         return combine(self, pa)
 
     def __add__(self, other: Parser[A]) -> Parser[A]:
@@ -121,10 +126,12 @@ class Parser(Generic[A]):
 
     def end_by(self, sep: Parser[B]) -> Parser[list[A]]:
         from .combinator import end_by
+
         return end_by(self, sep)
 
     def __or__(self, pa: Parser[B]) -> Union[Parser[A], Parser[B]]:
         from .combinator import choice
+
         return choice([self, pa])
 
 
@@ -132,6 +139,6 @@ class Parser(Generic[A]):
 # Helper functions
 #
 
+
 def future() -> Parser[A]:
     return Parser(partial(Failure, "#Future: Parser is not defined yet"))
-
