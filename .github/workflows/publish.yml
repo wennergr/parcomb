@@ -24,7 +24,7 @@ jobs:
       - name: Build
         run: flit build
 
-      - nmae: Publish
+      - name: Publish
         run: flit publish
         env:
           FLIT_USERNAME: "__token__"
