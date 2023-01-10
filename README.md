@@ -1,4 +1,10 @@
-# Parcomb
+# Parcomb - Perser combinator library
+[![Build Status](https://github.com/wennergr/parcomb/actions/workflows/tests.yml/badge.svg)](https://github.com/wennergr/parcomb/actions/workflows/tests.yml)
+[![PyPI version](https://badge.fury.io/py/parcomb.svg)](https://badge.fury.io/py/parcomb)
+[![Coverage](https://codecov.io/gh/wennergr/parcomb/branch/main/graph/badge.svg)](https://app.codecov.io/gh/wennergr/parcomb/tree/main)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python Versions](https://img.shields.io/pypi/pyversions/parcomb.svg?style=flat-square)](https://pypi.org/project/parcomb/)
+
 Parcomb is a library for writing arbitrary text parsers and interpreters using regular python code. Technically, it's a top down back-tracing parser using [parser combinators](https://en.wikipedia.org/wiki/Parser_combinator). It's heavily influences by the [Parsec](https://hackage.haskell.org/package/parsec) library
 
 ## Installation
