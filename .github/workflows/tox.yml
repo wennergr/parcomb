@@ -2,11 +2,11 @@ name: tox
 on:
   push:
     branches:
-      - master
+      - main
 
   pull_request:
     paths:
-      - .github/workflows/ci.yml
+      - .github/workflows/*
       - parcomb/*
       - tests/*
       - pyproject.toml
