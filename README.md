@@ -10,6 +10,43 @@ Parcomb is a library for writing arbitrary text parsers and interpreters using r
 ## Installation
 `pip install parcomb`
 
+## Usage
+
+```python
+from parcomb.char import char, trim
+from parcomb.combinator import many, choice, between
+from parcomb.number import integer
+from parcomb.parsing import future
+
+input1 = "(1 + 4 * 6) + 5 + (6 + (10 + 11)) + 5"
+
+def eval(x: int, xs: list[(str, int)]) -> int:
+    if not xs:
+        return x
+
+    current = xs[0]
+    next = xs[1:]
+
+    fdict = {
+        "+": lambda a, b: eval(x + a, next),
+        "-": lambda a, b: eval(x - a, next),
+        "*": lambda a, b: eval(x * a, next),
+        "/": lambda a, b: eval(x / a, next),
+    }
+
+    return fdict[current[0]](current[1], next)
+
+op_prio1 = [trim(char(x)) for x in ["*", "/"]]
+op_prio2 = [trim(char(x)) for x in ["+", "-"]]
+
+expr = future()
+factor = trim(integer()) | between(char("("), expr, char(")"))
+term = (factor * many(choice(op_prio1) * factor)).map_u(eval)
+expr <<= (term * many(choice(op_prio2) * term)).map_u(eval)
+
+expr.run(input1)  # Success(value=62, next='')
+```
+
 ## Foundation
 A [parser](https://github.com/wennergr/parcomb/blob/6afd2a723b841582f43a198f98eb0536badc7828/parcomb/parsing.py#L40) is
 a function `string -> (A, string)` that reads zero or more characters from a string. It then optionally transforms what 
