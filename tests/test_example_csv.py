@@ -1,17 +1,15 @@
 from textwrap import dedent
 from .common import assert_success
-from parcomb.char import char, ANY, none_of
+from parcomb.char import char, any, none_of
 from parcomb.combinator import many, sep_by, between
 
 
 def test_csv():
-    csv = dedent(
-        """\
+    csv = dedent("""\
     name,age,location
     John Doe,45,"United States of America, \\"USA\\""
     Sandra Wurst,55,Germany
-    "Eric Strauss",25,Germany"""
-    )
+    "Eric Strauss",25,Germany""")
 
     expected = [
         {
@@ -29,9 +27,9 @@ def test_csv():
     def join(xs: list[str]):
         return "".join(xs)
 
-    esc = char("\\") << ANY
-    q_str = many(esc | none_of(['"']))
-    cell1 = between(char('"'), q_str, char('"')).map(join)  # Cell in quotation marks
+    esc = char("\\") << any()
+    q_str = many(esc | none_of(['"'])).map(join)
+    cell1 = between(char('"'), q_str, char('"'))  # Cell in quotation marks
     cell2 = many(none_of([",", "\n"])).map(join)  # Cell separated by ","
     row = sep_by(cell1 | cell2, char(","))
 
