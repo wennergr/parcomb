@@ -1,6 +1,6 @@
 from parcomb.combinator import *
 from parcomb.char import any, char
-from parcomb.string import string
+from parcomb.string import literal
 from parcomb.number import integer
 from .common import assert_failure, assert_success, join
 
@@ -51,7 +51,7 @@ def test_choice():
     input2 = "123456"
     input3 = "end"
 
-    start1 = string("abcdef")
+    start1 = literal("abcdef")
     start2 = integer().map(str)
 
     expr = choice([start1, start2])
@@ -79,7 +79,7 @@ def test_between():
     input3 = "abc1234cb"
 
     expr1 = between(char("["), any(), char("]"))
-    expr2 = between(string("abc"), integer(), string("cba"))
+    expr2 = between(literal("abc"), integer(), literal("cba"))
 
     assert_success(expr1.run(input1), "a", "")
     assert_success(expr2.run(input2), 1234, "")
