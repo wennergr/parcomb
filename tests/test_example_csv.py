@@ -5,11 +5,13 @@ from parcomb.combinator import many, sep_by, between
 
 
 def test_csv():
-    csv = dedent("""\
+    csv = dedent(
+        """\
     name,age,location
     John Doe,45,"United States of America, \\"USA\\""
     Sandra Wurst,55,Germany
-    "Eric Strauss",25,Germany""")
+    "Eric Strauss",25,Germany"""
+    )
 
     expected = [
         {
