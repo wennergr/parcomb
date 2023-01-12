@@ -30,6 +30,21 @@ def test_count():
     assert_success(expr.run(input1), "aaaa", "abbb")
     assert_failure(expr.run(input2), input2)
 
+    assert_success(count(0, char("a")).run(input1), "", input1)
+
+
+def test_debug():
+    input = "abc"
+
+    result = []
+
+    def p(s: str):
+        result.append(s)
+
+    many(debug(any(), "test", p)).run(input)
+
+    assert len(result) == 4
+
 
 def test_many():
     input1 = "aaaaabb"
@@ -136,3 +151,9 @@ def test_product_sum():
     assert_success(expr3.run(input1), ("a", "b", "c"), "def")
     assert_success(expr4.run(input1), ("a", "b", "c", "d"), "ef")
     assert_success(expr5.run(input1), ("a", "b", "c", "d", "e"), "f")
+
+
+def test_peak():
+    input = "abc"
+
+    assert_success((peek(any()) + any()).run(input), "aa", "bc")

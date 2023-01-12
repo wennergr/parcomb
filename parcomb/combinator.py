@@ -1,6 +1,7 @@
 from .parsing import Parser, Return, Success, Failure
 from typing import TypeVar, Iterable, Callable, Tuple
 from functools import partial
+from textwrap import dedent
 
 A = TypeVar("A")
 B = TypeVar("B")
@@ -121,7 +122,7 @@ def peek(pa: Parser[A]) -> Parser[A]:
         ret = pa.run(data)
 
         # Reset consumption pointer
-        ret.value = data
+        ret.next = data
 
         return ret
 
@@ -173,12 +174,21 @@ def debug(
     pa: Parser[A], label: str = "Debug", logger: Callable[[str], None] = print
 ) -> Parser[A]:
     def wrapper(data: str) -> Return:
-        logger(f"*** {label} ***")
-        logger(f"Input..: {data}")
+        buffer = dedent(
+            f"""\
+        *** {label} ***
+        Input..: {data}\n"""
+        )
+
         ret = pa.run(data)
-        logger(f"Success: {ret.success()}")
-        logger(f"Value..: {ret.value}")
-        logger(f"Next...: {ret.next}")
+        buffer += f"Success: {ret.success()}\n"
+
+        if ret.success():
+            buffer += f"Value..: {ret.value}"
+
+        buffer += f"Next...: {ret.next}"
+        logger(buffer)
+
         return ret
 
     return Parser(lambda x: wrapper(x))
