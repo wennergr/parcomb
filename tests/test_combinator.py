@@ -30,7 +30,7 @@ def test_count():
     assert_success(expr.run(input1), "aaaa", "abbb")
     assert_failure(expr.run(input2), input2)
 
-    assert_success(count(0, char("a")).run(input1), "", input1)
+    assert_success(count(0, char("a")).run(input1), [], input1)
 
 
 def test_debug():
