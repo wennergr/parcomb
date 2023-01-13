@@ -47,6 +47,11 @@ expr <<= (term * many(choice(op_prio2) * term)).map_u(eval)
 expr.run(input1)  # Success(value=62, next='')
 ```
 
+### More examples
+
+ * [CSV Parser](https://github.com/wennergr/parcomb/blob/main/tests/test_example_csv.py) (with support for quotation strings)
+ * [INI Parser](https://github.com/wennergr/parcomb/blob/main/tests/test_example_ini.py) (with support for comments)
+
 ## Foundation
 A [parser](https://github.com/wennergr/parcomb/blob/6afd2a723b841582f43a198f98eb0536badc7828/parcomb/parsing.py#L40) is
 a function `string -> (A, string)` that reads zero or more characters from a string. It then optionally transforms what 
@@ -209,9 +214,3 @@ spaces() << integer() >> spaces()  # Same as skip_right(skip_left(spaces(), inte
 elem = future() 
 elem <<= any()  # Same as elem.rebind(any())
 ```
-
-## More complete/complicated examples
-
- * [CSV Parser](https://github.com/wennergr/parcomb/blob/main/tests/test_example_csv.py) (with support for quotation marks)
- * [Calculator](https://github.com/wennergr/parcomb/blob/main/tests/test_example_calc.py) (with support for nesting and operator procedure)
- * [INI Parser](https://github.com/wennergr/parcomb/blob/main/tests/test_example_ini.py) (with support for comments)
