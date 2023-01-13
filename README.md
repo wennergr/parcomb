@@ -214,3 +214,4 @@ elem <<= any()  # Same as elem.rebind(any())
 
  * [CSV Parser](https://github.com/wennergr/parcomb/blob/main/tests/test_example_csv.py) (with support for quotation marks)
  * [Calculator](https://github.com/wennergr/parcomb/blob/main/tests/test_example_calc.py) (with support for nesting and operator procedure)
+ * [INI Parser](https://github.com/wennergr/parcomb/blob/main/tests/test_example_ini.py) (with support for comments)
