@@ -124,8 +124,8 @@ def test_end_by():
 
     expr = any().end_by(char(";")).map(join)
 
-    assert_success(expr.run(input1), "abcdefghijkl", "aa")
-    assert_success(expr.run(input2), "", "abc")
+    assert_success(expr.run(input1), "abcdefghijkl", ";aa")
+    assert_success(expr.run(input2), "", ";abc")
     assert_failure(expr.run(input3), input3)
 
 

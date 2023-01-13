@@ -43,7 +43,7 @@ def trim(pa: Parser[A]):
 
 
 def whitespace() -> Parser[str]:
-    return satisfy(lambda c: c.isdigit, "f#whitespace: Not a whitespace char")
+    return satisfy(lambda c: c.isspace(), "f#whitespace: Not a whitespace char")
 
 
 def whitespaces() -> Parser[list[str]]:

@@ -21,5 +21,9 @@ def join(xs: list[str]) -> str:
     return "".join(xs)
 
 
+def to_list(x: str) -> list[str]:
+    return [x]
+
+
 def compose(f: Callable[[B], C], g: Callable[[A], B]) -> Callable[[A], C]:
     return lambda x: f(g(x))

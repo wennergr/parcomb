@@ -110,7 +110,7 @@ def end_by(pa: Parser[A], end: Parser[B]) -> Parser[list[A]]:
 
         # Look for end termination
         if end.run(data).success():
-            return Success(result, ret_pa.next)
+            return Success(result, data)
 
         return parse(result + [ret_pa.value], ret_pa.next)
 
@@ -174,19 +174,22 @@ def debug(
     pa: Parser[A], label: str = "Debug", logger: Callable[[str], None] = print
 ) -> Parser[A]:
     def wrapper(data: str) -> Return:
-        buffer = dedent(
-            f"""\
-        *** {label} ***
-        Input..: {data}\n"""
-        )
+        format = lambda x: str(x)[:30].replace("\n", "\\n")
+
+        buffer = "+" * 80 + "\n"
+        buffer += f"""\
+*** {label} ***
+Input..: {format(data)}\n"""
 
         ret = pa.run(data)
         buffer += f"Success: {ret.success()}\n"
 
         if ret.success():
-            buffer += f"Value..: {ret.value}"
+            # output = ret.value[:10].replace("\\", "\\\\")
+            buffer += f"Value..: {format(ret.value)}\n"
 
-        buffer += f"Next...: {ret.next}"
+        buffer += f"Next...: {format(ret.next)}\n"
+        buffer += "-" * 80 + "\n"
         logger(buffer)
 
         return ret
