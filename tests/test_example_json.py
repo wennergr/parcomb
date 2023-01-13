@@ -1,4 +1,3 @@
-from typing import TypeVar
 from .common import join
 from parcomb.char import char, whitespaces, none_of
 from parcomb.string import literal, alphanumerics
@@ -28,13 +27,11 @@ def test_json():
     def trim(pa):
         return whitespaces() << pa >> whitespaces()
 
-    begin_array = trim(char("["))
-    end_array = trim(char("]"))
+    # Special delimited characters
+    begin_array, end_array = trim(char("[")), trim(char("]"))
+    begin_object, end_object = trim(char("{")), trim(char("}"))
 
-    begin_object = trim(char("{"))
-    end_object = trim(char("}"))
-
-    # Non-recursive JSON types
+    # Non-recursive JSON types (string, numbers, boolean, null)
     string_value = trim(
         between(char('"'), many(none_of(["\n", '"'])).map(join), char('"'))
     )
@@ -44,7 +41,7 @@ def test_json():
     )
     null_value = trim(literal("null").map(lambda _: None))
 
-    # Recursive JSON types (can be nested and by, for example, themself)
+    # Recursive JSON types (array, object)
     array_value = future()
     object_value = future()
 
