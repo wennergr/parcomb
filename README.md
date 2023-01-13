@@ -49,8 +49,9 @@ expr.run(input1)  # Success(value=62, next='')
 
 ### More examples
 
- * [CSV Parser](https://github.com/wennergr/parcomb/blob/main/tests/test_example_csv.py) (with support for quotation strings)
- * [INI Parser](https://github.com/wennergr/parcomb/blob/main/tests/test_example_ini.py) (with support for comments)
+ * [JSON Parser](https://github.com/wennergr/parcomb/blob/main/tests/test_example_json.py)
+ * [CSV Parser](https://github.com/wennergr/parcomb/blob/main/tests/test_example_csv.py)
+ * [INI Parser](https://github.com/wennergr/parcomb/blob/main/tests/test_example_ini.py)
 
 ## Foundation
 A [parser](https://github.com/wennergr/parcomb/blob/6afd2a723b841582f43a198f98eb0536badc7828/parcomb/parsing.py#L40) is
