@@ -17,7 +17,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 keywords = ["parser", "parser-combinators"]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [project.optional-dependencies]
 dev = ["pytest", "pip-tools"]

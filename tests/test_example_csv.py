@@ -1,5 +1,5 @@
 from textwrap import dedent
-from .common import assert_success
+from tests.common import assert_success
 from parcomb.char import char, any, none_of
 from parcomb.combinator import many, sep_by, between
 

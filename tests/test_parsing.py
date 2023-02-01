@@ -1,6 +1,6 @@
 from parcomb.parsing import *
 from parcomb.combinator import const
-from .common import assert_success, assert_failure
+from tests.common import assert_success, assert_failure
 
 a1 = "abc"
 a2 = "next"

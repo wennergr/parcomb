@@ -1,4 +1,5 @@
-from .common import assert_success
+from tests.common import assert_success
+from typing import Tuple
 from parcomb.char import char, trim
 from parcomb.number import integer
 from parcomb.parsing import future
@@ -18,7 +19,7 @@ def test_calc():
     input2 = "(1 + 4 + 6) + 5 + (6 + (10 + 11)) + 5"
     input3 = "1 + 2 + 5 * 6 + 6"
 
-    def eval(x: int, xs: list[(str, int)]) -> int:
+    def eval(x: int, xs: list[Tuple[str, int]]) -> int:
         if not xs:
             return x
 
@@ -39,8 +40,8 @@ def test_calc():
 
     expr = future()  # Delay the binding of the expression
     factor = trim(integer()) | between(char("("), expr, char(")"))
-    term = (factor * many(choice(op_prio1) * factor)).map_u(eval)
-    expr <<= (term * many(choice(op_prio2) * term)).map_u(eval)
+    term = (factor * many(choice(*op_prio1) * factor)).map_u(eval)
+    expr <<= (term * many(choice(*op_prio2) * term)).map_u(eval)
 
     assert_success(expr.run(input1), 51, "")
     assert_success(expr.run(input2), 48, "")

@@ -1,4 +1,4 @@
-from .common import assert_success, assert_failure
+from tests.common import assert_success, assert_failure
 from parcomb.char import char
 from parcomb.string import literal, word, alphas, alphanumerics
 
