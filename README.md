@@ -13,6 +13,7 @@ Parcomb is a library for writing arbitrary text parsers and interpreters using r
 ## Usage
 
 ```python
+from typing import Tuple
 from parcomb.char import char, trim
 from parcomb.combinator import many, choice, between
 from parcomb.number import integer
@@ -20,7 +21,7 @@ from parcomb.parsing import future
 
 input1 = "(1 + 4 * 6) + 5 + (6 + (10 + 11)) + 5"
 
-def eval(x: int, xs: list[(str, int)]) -> int:
+def eval(x: int, xs: list[Tuple[str, int]]) -> int:
     if not xs:
         return x
 
@@ -41,8 +42,8 @@ op_prio2 = [trim(char(x)) for x in ["+", "-"]]
 
 expr = future()
 factor = trim(integer()) | between(char("("), expr, char(")"))
-term = (factor * many(choice(op_prio1) * factor)).map_u(eval)
-expr <<= (term * many(choice(op_prio2) * term)).map_u(eval)
+term = (factor * many(choice(*op_prio1) * factor)).map_u(eval)
+expr <<= (term * many(choice(*op_prio2) * term)).map_u(eval)
 
 expr.run(input1)  # Success(value=62, next='')
 ```

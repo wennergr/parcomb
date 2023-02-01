@@ -2,7 +2,7 @@ from parcomb.combinator import *
 from parcomb.char import any, char
 from parcomb.string import literal
 from parcomb.number import integer
-from .common import assert_failure, assert_success, join
+from tests.common import assert_success, assert_failure, join
 
 
 def test_const():
@@ -69,7 +69,7 @@ def test_choice():
     start1 = literal("abcdef")
     start2 = integer().map(str)
 
-    expr = choice([start1, start2])
+    expr = choice(start1, start2)
 
     assert_success(expr.run(input1), "abcdef", "")
     assert_success(expr.run(input2), "123456", "")

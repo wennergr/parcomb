@@ -1,27 +1,31 @@
-from parcomb.parsing import Return
-from typing import NoReturn, TypeVar, Callable
+from parcomb.parsing import Return, is_success, is_failure
+from typing import TypeVar, Callable
 
 A = TypeVar("A")
 B = TypeVar("B")
 C = TypeVar("C")
 
 
-def assert_success(obj: Return, value: A, next: str) -> NoReturn:
+def assert_success(obj: Return[A], value: A, next: str) -> None:
     assert obj.success()
-    assert obj.value == value
-    assert obj.next == next
+
+    if is_success(obj):
+        assert obj.value == value
+        assert obj.next == next
 
 
-def assert_failure(obj: Return, next: str) -> NoReturn:
-    assert obj.failure()
-    assert obj.next == next
+def assert_failure(obj: Return, next: str) -> None:
+    assert not obj.success()
+
+    if is_failure(obj):
+        assert obj.next == next
 
 
 def join(xs: list[str]) -> str:
     return "".join(xs)
 
 
-def to_list(x: str) -> list[str]:
+def to_list(x: A) -> list[A]:
     return [x]
 
 

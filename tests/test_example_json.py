@@ -1,4 +1,4 @@
-from .common import join
+from tests.common import join
 from parcomb.char import char, whitespaces, none_of
 from parcomb.string import literal, alphanumerics
 from parcomb.number import integer

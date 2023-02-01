@@ -1,7 +1,6 @@
-from .parsing import Parser, Return, Success, Failure
-from typing import TypeVar, Iterable, Callable, Tuple
+from .parsing import Parser, Return, Success, Failure, is_failure, is_success
+from typing import TypeVar, Callable, Tuple
 from functools import partial
-from textwrap import dedent
 
 A = TypeVar("A")
 B = TypeVar("B")
@@ -15,14 +14,12 @@ def const(a: A) -> Parser[A]:
 
 
 def many(pa: Parser[A]) -> Parser[list[A]]:
-    def parse(result: list[A], data: str) -> Return:
-        ret = pa.run(data)
-
-        return (
-            Success(result, data)
-            if ret.failure()
-            else parse(result + [ret.value], ret.next)
-        )
+    def parse(result: list[A], data: str) -> Return[list[A]]:
+        match pa.run(data):
+            case Success(value, next):
+                return parse(result + [value], next)
+            case failure:
+                return Success(result, data)
 
     return Parser(partial(parse, []))
 
@@ -32,10 +29,10 @@ def many1(pa: Parser[A]) -> Parser[list[A]]:
 
 
 def attempt(pa: Parser[A]) -> Parser[A]:
-    def parse(data: str) -> Return:
+    def parse(data: str) -> Return[A]:
         ret = pa.run(data)
 
-        return Failure(ret.message, data) if ret.failure() else ret
+        return Failure(ret.message, data) if is_failure(ret) else ret
 
     return Parser(parse)
 
@@ -44,15 +41,15 @@ def count(n: int, pa: Parser[A]) -> Parser[list[A]]:
     if n <= 0:
         return Parser.pure([])
 
-    def parse(c: int, result: list[A], data: str) -> Return:
+    def parse(c: int, result: list[A], data: str) -> Return[list[A]]:
         if c == 0:
             return Success(result, data)
 
-        ret = pa.run(data)
-        if ret.failure():
-            return ret
-
-        return parse(c - 1, result + [ret.value], ret.next)
+        match pa.run(data):
+            case Success(value, next):
+                return parse(c - 1, result + [value], next)
+            case failure:
+                return failure  # type: ignore
 
     return attempt(Parser(partial(parse, n, [])))
 
@@ -61,17 +58,19 @@ def skip_left(pa: Parser[A], pb: Parser[B]) -> Parser[B]:
     return pa.and_then(lambda _: pb)
 
 
-def skip_right(pa: Parser[A], pb: Parser[B]) -> Parser[B]:
+def skip_right(pa: Parser[A], pb: Parser[B]) -> Parser[A]:
     return pa.and_then(lambda x: pb.and_then(lambda _: Parser.pure(x)))
 
 
-def choice(pas: Iterable[Parser[A]]) -> Parser[A]:
-    def parse(data: str) -> Return:
-        for pa in pas:
-            ret = pa.run(data)
+def choice(pa: Parser[A], pb: Parser[B]) -> Parser[A] | Parser[B]:
+    def parse(data: str) -> Return[A]:
+        ret_a = pa.run(data)
+        if is_success(ret_a):
+            return ret_a
 
-            if ret.success():
-                return ret
+        ret_b = pb.run(data)
+        if is_success(ret_b):
+            return ret_b
 
         return Failure(f"#choice: no successful parser for data {data}", data)
 
@@ -79,7 +78,7 @@ def choice(pas: Iterable[Parser[A]]) -> Parser[A]:
 
 
 def sep_by(pa: Parser[A], sep: Parser[B]) -> Parser[list[A]]:
-    return choice([sep_by1(pa, sep), Parser.pure([])])
+    return choice(sep_by1(pa, sep), Parser.pure([]))
 
 
 def sep_by1(pa: Parser[A], sep: Parser[B]) -> Parser[list[A]]:
@@ -94,7 +93,7 @@ def between(open: Parser[A], p: Parser[B], close: Parser[C]) -> Parser[B]:
 
 
 def combine(p1: Parser[A], p2: Parser[A]) -> Parser[A]:
-    return combine_f(p1, p2, lambda a, b: a + b)
+    return combine_f(p1, p2, lambda a, b: a + b)  # type: ignore
 
 
 def combine_f(p1: Parser[A], p2: Parser[A], f: Callable[[A, A], A]) -> Parser[A]:
@@ -105,14 +104,14 @@ def end_by(pa: Parser[A], end: Parser[B]) -> Parser[list[A]]:
     def parse(result: list[A], data: str) -> Return:
         ret_pa = pa.run(data)
 
-        if ret_pa.failure():
+        if is_failure(ret_pa):
             return ret_pa
 
         # Look for end termination
-        if end.run(data).success():
+        if is_success(end.run(data)):
             return Success(result, data)
 
-        return parse(result + [ret_pa.value], ret_pa.next)
+        return parse(result + [ret_pa.value], ret_pa.next)  # type: ignore
 
     return attempt(Parser(partial(parse, [])))
 
@@ -182,9 +181,9 @@ def debug(
 Input..: {format(data)}\n"""
 
         ret = pa.run(data)
-        buffer += f"Success: {ret.success()}\n"
+        buffer += f"Success: {is_success(ret)}\n"
 
-        if ret.success():
+        if is_success(ret):
             # output = ret.value[:10].replace("\\", "\\\\")
             buffer += f"Value..: {format(ret.value)}\n"
 

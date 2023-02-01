@@ -1,12 +1,11 @@
 from textwrap import dedent
-from .common import assert_success, join, to_list
+from tests.common import assert_success, join, to_list
 from parcomb.char import char, none_of, trim, one_of, any, eof
 from parcomb.combinator import between, many1, end_by, const
 from parcomb.parsing import future
 
 
 def test_ini():
-
     input1 = dedent(
         """\
     ; last modified 1 April 2001 by John Doe
