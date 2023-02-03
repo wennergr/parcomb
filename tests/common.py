@@ -1,4 +1,4 @@
-from parcomb.parsing import Return, is_success, is_failure
+from parcomb.response import Return, is_success, is_failure
 from typing import TypeVar, Callable
 
 A = TypeVar("A")

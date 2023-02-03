@@ -3,7 +3,8 @@ from parcomb.char import char, whitespaces, none_of
 from parcomb.string import literal, alphanumerics
 from parcomb.number import integer
 from parcomb.combinator import between, sep_by, debug, many
-from parcomb.parsing import future, Parser, Success
+from parcomb.parsing import future
+from parcomb.response import Success
 
 
 def test_json():

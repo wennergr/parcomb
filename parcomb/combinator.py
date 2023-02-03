@@ -1,4 +1,5 @@
-from .parsing import Parser, Return, Success, Failure, is_failure, is_success
+from .parsing import Parser
+from .response import Return, Success, Failure, is_failure, is_success
 from typing import TypeVar, Callable, Tuple
 from functools import partial
 

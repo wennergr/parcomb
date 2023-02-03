@@ -1,45 +1,10 @@
 from __future__ import annotations
-from dataclasses import dataclass
 from functools import partial
-from typing import Generic, TypeVar, Callable, Union, overload, TypeGuard, Tuple
+from typing import Generic, TypeVar, Callable, Tuple
+from .response import Return, Success, Failure, is_success
 
 A = TypeVar("A")
 B = TypeVar("B")
-
-
-@dataclass
-class Failure:
-    message: str
-    next: str
-
-    def success(self):
-        return False
-
-    def map(self, f: Callable[[A], B]) -> Failure:
-        return self
-
-
-@dataclass
-class Success(Generic[A]):
-    value: A
-    next: str
-
-    def success(self):
-        return True
-
-    def map(self, f: Callable[[A], B]) -> Success[B]:
-        return Success(f(self.value), self.next)
-
-
-Return = Success[A] | Failure
-
-
-def is_success(ret: Return[A]) -> TypeGuard[Success]:
-    return isinstance(ret, Success)
-
-
-def is_failure(ret: Return[A]) -> TypeGuard[Failure]:
-    return isinstance(ret, Failure)
 
 
 class Parser(Generic[A]):
