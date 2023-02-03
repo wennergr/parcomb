@@ -48,6 +48,26 @@ expr <<= (term * many(choice(*op_prio2) * term)).map_u(eval)
 expr.run(input1)  # Success(value=62, next='')
 ```
 
+
+```python
+from parcomb.number import integer
+from parcomb.char import char, trim
+from parcomb.string import literal
+from parcomb.combinator import sep_by1
+
+input1  = """\
+498,4 -> 498,6 -> 496,6
+503,4 -> 502,4 -> 502,9 -> 494,9
+100,5"""
+
+position = (integer() >> char(",")) * integer()
+sep = trim(literal("->"))
+line = sep_by1(position, sep)
+lines = sep_by1(line, char("\n"))
+
+lines.run(input1).get_or_raise()  # [[(498, 4), (498, 6), (496, 6)], [(503, 4), (502, 4), (502, 9), (494, 9)], [(100, 5)]]
+```
+
 ### More examples
 
  * [JSON Parser](https://github.com/wennergr/parcomb/blob/main/tests/test_example_json.py)
