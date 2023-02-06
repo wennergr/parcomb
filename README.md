@@ -73,6 +73,7 @@ lines.run(input1).get_or_raise()  # [[(498, 4), (498, 6), (496, 6)], [(503, 4), 
  * [JSON Parser](https://github.com/wennergr/parcomb/blob/main/tests/test_example_json.py)
  * [CSV Parser](https://github.com/wennergr/parcomb/blob/main/tests/test_example_csv.py)
  * [INI Parser](https://github.com/wennergr/parcomb/blob/main/tests/test_example_ini.py)
+ * [Using regex](https://github.com/wennergr/parcomb/blob/main/tests/test_example_regex.py)
 
 ## Foundation
 A [parser](https://github.com/wennergr/parcomb/blob/6afd2a723b841582f43a198f98eb0536badc7828/parcomb/parsing.py#L40) is
