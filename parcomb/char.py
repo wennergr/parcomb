@@ -39,7 +39,7 @@ def spaces() -> Parser[list[str]]:
     return many(space())
 
 
-def trim(pa: Parser[A]):
+def trim(pa: Parser[A]) -> Parser[A]:
     return spaces() << pa >> spaces()
 
 
